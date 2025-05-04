@@ -59,11 +59,7 @@ def create_contact():
 
 @api.route('/contacts', methods=['GET'])
 def get_contacts():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({'error': 'Missing user_id'}), 400
-
-    contacts = Contact.query.filter_by(user_id=user_id).all()
+    contacts = Contact.query.all()
     result = []
     for contact in contacts:
         result.append({
@@ -74,7 +70,6 @@ def get_contacts():
             'user_id': contact.user_id
         })
     return jsonify(result), 200
-
 
 @api.route('/contacts/<int:id>', methods=['PUT'])
 def update_contact(id):
