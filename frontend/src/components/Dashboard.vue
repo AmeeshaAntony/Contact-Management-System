@@ -1,41 +1,44 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-left">
-      <div class="profile-pic-placeholder"></div>
-      <div class="team-section">
-        <div class="team-label">OUR TEAM</div>
-        <div class="user-name">{{ userName }}</div>
-        <div class="user-role">Member</div>
-        <a href="#" class="explore-link">Explore</a>
-      </div>
-    </div>
-    <div class="dashboard-right">
-      <button class="logout-btn top-right" @click="logout">LOGOUT</button>
-      <div class="welcome-box">
-        <h1 class="welcome-title">Welcome, {{ userName }}!</h1>
-        <div class="welcome-desc">
-          Your personal dashboard for managing contacts and more.<br>
-          <span class="desc-small">We offer solutions adapted to today's needs.</span>
+  <div>
+    <NavBar />
+    <div class="dashboard-container">
+      <div class="dashboard-left">
+        <div class="profile-pic-placeholder"></div>
+        <div class="team-section">
+          <div class="team-label">OUR TEAM</div>
+          <div class="user-name">{{ userName }}</div>
+          <div class="user-role">Member</div>
+          <a href="#" class="explore-link">Explore</a>
         </div>
-        <button class="view-more-btn" @click="showMore = !showMore">
-          {{ showMore ? 'VIEW LESS' : 'VIEW MORE' }}
-        </button>
-        <transition name="fade">
-          <div v-if="showMore" class="more-content">
-            <h3>About This Dashboard</h3>
-            <p>
-              This dashboard is your central hub for managing your contacts and accessing all features of your account. Stay tuned for more updates and enhancements!
-            </p>
-            <h3>About Add Contacts</h3>
-            <p>
-              The Add Contacts page allows you to easily add new contacts to your list. Fill in the required details and save them for quick access and management.
-            </p>
-            <h3>About View Contacts</h3>
-            <p>
-              The View Contacts page displays all your saved contacts. You can view, edit, or delete contacts as needed, making it simple to keep your information up to date.
-            </p>
+      </div>
+      <div class="dashboard-right">
+        <button class="logout-btn top-right" @click="logout">LOGOUT</button>
+        <div class="welcome-box">
+          <h1 class="welcome-title">Welcome, {{ userName }}!</h1>
+          <div class="welcome-desc">
+            Your personal dashboard for managing contacts and more.<br>
+            <span class="desc-small">We offer solutions adapted to today's needs.</span>
           </div>
-        </transition>
+          <button class="view-more-btn" @click="showMore = !showMore">
+            {{ showMore ? 'VIEW LESS' : 'VIEW MORE' }}
+          </button>
+          <transition name="fade">
+            <div v-if="showMore" class="more-content">
+              <h3>About This Dashboard</h3>
+              <p>
+                This dashboard is your central hub for managing your contacts and accessing all features of your account. Stay tuned for more updates and enhancements!
+              </p>
+              <h3>About Add Contacts</h3>
+              <p>
+                The Add Contacts page allows you to easily add new contacts to your list. Fill in the required details and save them for quick access and management.
+              </p>
+              <h3>About View Contacts</h3>
+              <p>
+                The View Contacts page displays all your saved contacts. You can view, edit, or delete contacts as needed, making it simple to keep your information up to date.
+              </p>
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -43,8 +46,10 @@
 
 <script>
 import axios from 'axios';
+import NavBar from './NavBar.vue';
 
 export default {
+  components: { NavBar },
   data() {
     return {
       userId: localStorage.getItem('user_id'),
