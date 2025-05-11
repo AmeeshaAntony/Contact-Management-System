@@ -1,4 +1,6 @@
-from flask import Blueprint, request, jsonify
+import os
+from werkzeug.utils import secure_filename
+from flask import Blueprint, request, jsonify, current_app
 from app.models import Contact, User
 from app.app_setup import db, bcrypt
 
@@ -104,5 +106,40 @@ def get_user(user_id):
     return jsonify({
         "id": user.id,
         "name": user.name,
-        "email": user.email
+        "email": user.email,
+        "profile_pic": user.profile_pic
     }), 200
+
+@api.route('/user/<int:user_id>/profile-pic', methods=['POST'])
+def upload_profile_pic(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if 'profile_pic' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files['profile_pic']
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+
+    if file:
+        # Create uploads directory if it doesn't exist
+        upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+
+        # Secure the filename and save the file
+        filename = secure_filename(f"profile_{user_id}_{file.filename}")
+        file_path = os.path.join(upload_folder, filename)
+        file.save(file_path)
+
+        # Update user's profile_pic field with the file path
+        user.profile_pic = f"/static/uploads/{filename}"
+        db.session.commit()
+
+        return jsonify({
+            "message": "Profile picture uploaded successfully",
+            "profile_pic": user.profile_pic
+        }), 200
+
+    return jsonify({"error": "File upload failed"}), 400

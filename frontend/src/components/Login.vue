@@ -39,12 +39,22 @@ export default {
         });
 
         if (response.status === 200) {
+          // Store user ID
           localStorage.setItem('user_id', response.data.user_id);
+          
+          // Fetch and store additional user details
+          const userResponse = await axios.get(`http://localhost:5000/user/${response.data.user_id}`);
+          if (userResponse.data) {
+            localStorage.setItem('user_name', userResponse.data.name);
+            localStorage.setItem('user_email', userResponse.data.email);
+          }
+          
           this.$router.push('/dashboard');
           this.$emit('login-success');
         }
       } catch (error) {
-        this.errorMessage = error.response?.data?.error || 'Login failed.';
+        console.error('Login error:', error.response || error);
+        this.errorMessage = error.response?.data?.error || 'Login failed. Please check your credentials.';
       }
     },
     goToRegister() {
