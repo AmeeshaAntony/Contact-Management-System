@@ -3,7 +3,12 @@
     <NavBar />
     <div class="dashboard-container">
       <div class="dashboard-left">
-        <div class="profile-pic-placeholder"></div>
+        <div class="profile-pic-container">
+          <img v-if="profilePic" :src="profilePic" alt="Profile Picture" class="profile-pic" />
+          <div v-else class="profile-pic-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
         <div class="team-section">
           <div class="team-label">OUR TEAM</div>
           <div class="user-name">{{ userName }}</div>
@@ -54,6 +59,7 @@ export default {
     return {
       userId: localStorage.getItem('user_id'),
       userName: '',
+      profilePic: null,
       showMore: false
     };
   },
@@ -62,6 +68,7 @@ export default {
       try {
         const response = await axios.get(`http://localhost:5000/user/${this.userId}`);
         this.userName = response.data.name;
+        this.profilePic = response.data.profile_pic ? `http://localhost:5000${response.data.profile_pic}` : null;
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -92,12 +99,25 @@ export default {
   padding: 40px 0;
   border-right: 1px solid #f0f0f0;
 }
-.profile-pic-placeholder {
+.profile-pic-container {
   width: 320px;
   height: 320px;
+  margin-bottom: 32px;
+  position: relative;
+}
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ff5e62;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.profile-pic-placeholder {
+  width: 100%;
+  height: 100%;
   background: #fff0f0;
   border-radius: 50%;
-  margin-bottom: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,7 +259,7 @@ export default {
     min-height: 320px;
     border: none;
   }
-  .profile-pic-placeholder, .team-section {
+  .profile-pic-container, .team-section {
     width: 90vw;
     max-width: 340px;
   }

@@ -110,6 +110,39 @@ def get_user(user_id):
         "profile_pic": user.profile_pic
     }), 200
 
+@api.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    
+    # Check if email is being changed and if it's already taken
+    if data.get('email') and data.get('email') != user.email:
+        existing_user = User.query.filter_by(email=data.get('email')).first()
+        if existing_user and existing_user.id != user_id:
+            return jsonify({"error": "Email already in use"}), 409
+
+    # Update user details
+    user.name = data.get('name', user.name)
+    user.email = data.get('email', user.email)
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "User updated successfully",
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "profile_pic": user.profile_pic
+            }
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update user"}), 500
+
 @api.route('/user/<int:user_id>/profile-pic', methods=['POST'])
 def upload_profile_pic(user_id):
     user = User.query.get(user_id)

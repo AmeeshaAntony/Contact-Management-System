@@ -21,14 +21,20 @@
       <form @submit.prevent="updateProfile" class="profile-form">
         <div class="form-group">
           <label>Name</label>
-          <input type="text" v-model="name" required />
+          <input type="text" v-model="name" required @input="hasChanges = true" />
         </div>
         <div class="form-group">
           <label>Email</label>
-          <input type="email" v-model="email" required />
+          <input type="email" v-model="email" required @input="hasChanges = true" />
         </div>
-        <button type="submit" class="save-btn">Save Changes</button>
+        <button type="submit" class="save-btn" :class="{ 'saved': !hasChanges }">Save Changes</button>
       </form>
+
+      <div class="home-button-container">
+        <button @click="goToDashboard" class="home-btn">
+          <i class="fas fa-home"></i> Home
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +51,8 @@ export default {
       email: '',
       selectedFile: null,
       profilePic: null,
-      hasSavedProfilePic: false
+      hasSavedProfilePic: false,
+      hasChanges: false
     };
   },
   async mounted() {
@@ -63,6 +70,9 @@ export default {
     }
   },
   methods: {
+    goToDashboard() {
+      this.$router.push('/dashboard');
+    },
     handleFileChange(event) {
       this.selectedFile = event.target.files[0];
       if (this.selectedFile) {
@@ -96,16 +106,23 @@ export default {
     async updateProfile() {
       try {
         const userId = localStorage.getItem('user_id');
+        this.hasChanges = false;
         const response = await axios.put(`http://localhost:5000/user/${userId}`, {
           name: this.name,
           email: this.email
         });
         
         if (response.status === 200) {
+          localStorage.setItem('user_name', response.data.user.name);
+          localStorage.setItem('user_email', response.data.user.email);
+          
           alert('Profile updated successfully!');
+          this.hasChanges = false;
         }
       } catch (error) {
         console.error('Error updating profile:', error);
+        this.hasChanges = true;
+        alert(error.response?.data?.error || 'Failed to update profile. Please try again.');
       }
     }
   }
@@ -203,6 +220,15 @@ h1 {
   background: #ff4448;
 }
 
+.save-btn.saved {
+  background: #ccc;
+  cursor: default;
+}
+
+.save-btn.saved:hover {
+  background: #ccc;
+}
+
 .profile-form {
   display: flex;
   flex-direction: column;
@@ -230,5 +256,44 @@ h1 {
 .form-group input:focus {
   outline: none;
   border-color: #ff5e62;
+}
+
+.home-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.home-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.home-btn i {
+  font-size: 1.2rem;
+}
+
+.home-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.home-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 </style> 
