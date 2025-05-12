@@ -8,25 +8,70 @@ api = Blueprint('api', __name__)
 
 @api.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    name = data.get('name')
-    email = data.get('email')
-    password = data.get('password')
+    try:
+        data = request.form
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        phone = data.get('phone', None)  # Make phone optional
 
-    if not name or not email or not password:
-        return jsonify({"error": "Missing fields"}), 400
+        print(f"Received registration data: name={name}, email={email}, phone={phone}")  # Debug log
 
-    # check if user already exists
-    if User.query.filter_by(email=email).first():
-        return jsonify({"error": "Email already registered"}), 409
+        if not name or not email or not password:
+            return jsonify({"error": "Missing required fields"}), 400
 
-    hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(name=name, email=email, password=hashed_pw)
+        # check if user already exists
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Email already registered"}), 409
 
-    db.session.add(new_user)
-    db.session.commit()
+        hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
+        
+        # Create new user without phone field first
+        new_user = User(
+            name=name,
+            email=email,
+            password=hashed_pw
+        )
 
-    return jsonify({"message": "User registered successfully"}), 201
+        # Add phone if provided
+        if phone:
+            new_user.phone = phone
+
+        # Handle profile picture upload if provided
+        if 'profile_pic' in request.files:
+            file = request.files['profile_pic']
+            if file.filename != '':
+                try:
+                    # Create uploads directory if it doesn't exist
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    print(f"Upload folder path: {upload_folder}")  # Debug log
+
+                    # Secure the filename and save the file
+                    filename = secure_filename(f"profile_{email}_{file.filename}")
+                    file_path = os.path.join(upload_folder, filename)
+                    file.save(file_path)
+                    print(f"File saved at: {file_path}")  # Debug log
+
+                    # Set the profile picture path
+                    new_user.profile_pic = f"/static/uploads/{filename}"
+                except Exception as e:
+                    print(f"Error saving profile picture: {str(e)}")  # Debug log
+                    return jsonify({"error": f"Failed to save profile picture: {str(e)}"}), 500
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            print(f"User registered successfully: {email}")  # Debug log
+            return jsonify({"message": "User registered successfully"}), 201
+        except Exception as e:
+            db.session.rollback()
+            print(f"Database error: {str(e)}")  # Debug log
+            return jsonify({"error": f"Database error: {str(e)}"}), 500
+
+    except Exception as e:
+        print(f"Registration error: {str(e)}")  # Debug log
+        return jsonify({"error": f"Registration failed: {str(e)}"}), 500
 
 
 @api.route('/login', methods=['POST'])
