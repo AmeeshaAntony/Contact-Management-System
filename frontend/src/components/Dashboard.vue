@@ -10,14 +10,10 @@
           </div>
         </div>
         <div class="team-section">
-          <div class="team-label">OUR TEAM</div>
           <div class="user-name">{{ userName }}</div>
-          <div class="user-role">Member</div>
-          <a href="#" class="explore-link">Explore</a>
         </div>
       </div>
       <div class="dashboard-right">
-        <button class="logout-btn top-right" @click="logout">LOGOUT</button>
         <div class="welcome-box">
           <h1 class="welcome-title">Welcome, {{ userName }}!</h1>
           <div class="welcome-desc">
@@ -126,8 +122,10 @@ export default {
   border: 4px dashed #ffb3b3;
 }
 .team-section {
-  text-align: left;
-  width: 320px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px;
 }
 .team-label {
   font-size: 0.95rem;
@@ -139,10 +137,10 @@ export default {
   padding-bottom: 2px;
 }
 .user-name {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 600;
-  margin: 8px 0 2px 0;
-  color: #222;
+  color: #333;
+  margin-right: 20px;
 }
 .user-role {
   font-size: 1.1rem;
