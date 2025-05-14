@@ -1,21 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../components/Login.vue';
-import Register from '../components/Register.vue';
-import AddContact from '../components/AddContact.vue';
-import ViewContacts from '../components/ViewContacts.vue';
-import EditContact from '../components/EditContact.vue';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-const routes = [
-  { path: '/login', name: 'login', component: Login },
-  { path: '/register', name: 'register', component: Register },
-  { path: '/add-contact', name: 'addcontact', component: AddContact },
-  { path: '/viewcontacts', name: 'viewcontacts', component: ViewContacts },
-  { path: '/edit-contact', name: 'editcontact', component: EditContact },
-];
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes
-});
-
-export default router;
+reportWebVitals();

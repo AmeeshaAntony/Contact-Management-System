@@ -1,15 +1,14 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
-import mitt from 'mitt';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-const app = createApp(App);
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-// Attach event bus
-const emitter = mitt();
-app.config.globalProperties.emitter = emitter;
-
-app.use(router).mount('#app');
-
-// Mount React app
-import './reactApp.jsx';
+reportWebVitals();

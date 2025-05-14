@@ -12,9 +12,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
 
+    # Configure CORS to allow all origins during development
+    CORS(app, supports_credentials=True)
+
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
     bcrypt.init_app(app)
     
     from app.views import api 

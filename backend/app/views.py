@@ -142,6 +142,20 @@ def delete_contact(id):
     db.session.commit()
     return jsonify({'message': 'Contact deleted'}), 200
 
+@api.route('/contacts/<int:id>', methods=['GET'])
+def get_contact(id):
+    contact = Contact.query.get(id)
+    if not contact:
+        return jsonify({'error': 'Contact not found'}), 404
+    
+    return jsonify({
+        'id': contact.id,
+        'name': contact.name,
+        'phone': contact.phone,
+        'email': contact.email,
+        'user_id': contact.user_id
+    }), 200
+
 @api.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     user = User.query.get(user_id)
