@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './ViewContacts.css';
 
 const ViewContacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -71,6 +72,11 @@ const ViewContacts = () => {
             </div>
           ))
         )}
+      </div>
+      <div className="home-button-container">
+        <button className="home-button" onClick={() => navigate('/contacts')}>
+          Back to Home
+        </button>
       </div>
     </div>
   );
