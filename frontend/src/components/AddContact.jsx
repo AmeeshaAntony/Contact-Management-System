@@ -29,7 +29,7 @@ const AddContact = () => {
   };
 
   const validatePhone = (phone) => {
-    // Remove any non-digit characters to count only the digits
+   
     const digitsOnly = phone.replace(/\D/g, '');
     
     if (digitsOnly.length !== 10) {
@@ -45,7 +45,7 @@ const AddContact = () => {
       [name]: value
     });
 
-    // Validate fields on change
+
     if (name === 'name') {
       setNameError(validateName(value));
     }
@@ -61,7 +61,6 @@ const AddContact = () => {
     e.preventDefault();
     setError('');
 
-    // Validate all fields before submission
     const nameValidationError = validateName(formData.name);
     const emailValidationError = validateEmail(formData.email);
     const phoneValidationError = validatePhone(formData.phone);

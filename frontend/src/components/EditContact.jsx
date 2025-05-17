@@ -29,7 +29,7 @@ const EditContact = () => {
         }
       });
       
-      // Verify that the contact belongs to the current user
+      
       if (response.data.user_id !== parseInt(localStorage.getItem('user_id'))) {
         setError('You do not have permission to edit this contact');
         return;

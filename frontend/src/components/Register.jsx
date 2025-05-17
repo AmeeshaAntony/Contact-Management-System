@@ -59,9 +59,9 @@ const Register = () => {
   };
 
   const validatePhone = (phone) => {
-    if (!phone) return ''; // Phone is optional, so empty is valid
+    if (!phone) return ''; 
     
-    // Remove any non-digit characters to count only the digits
+    
     const digitsOnly = phone.replace(/\D/g, '');
     
     if (digitsOnly.length !== 10) {
@@ -100,28 +100,28 @@ const Register = () => {
     setError('');
     setSuccess('');
     
-    // Validate name
+   
     const nameValidationError = validateName(formData.name);
     if (nameValidationError) {
       setNameError(nameValidationError);
       return;
     }
     
-    // Validate email
+    
     const emailValidationError = validateEmail(formData.email);
     if (emailValidationError) {
       setEmailError(emailValidationError);
       return;
     }
     
-    // Validate password
+    
     const passwordValidationError = validatePassword(formData.password);
     if (passwordValidationError) {
       setPasswordError(passwordValidationError);
       return;
     }
     
-    // Validate phone if provided
+    
     if (formData.phone) {
       const phoneValidationError = validatePhone(formData.phone);
       if (phoneValidationError) {
