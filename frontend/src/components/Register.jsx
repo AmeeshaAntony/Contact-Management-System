@@ -55,6 +55,9 @@ const Register = () => {
     if (name.length > 55) {
       return 'Name cannot exceed 55 characters';
     }
+    if(!name){
+      return 'Name is not present';
+    }
     return '';
   };
 

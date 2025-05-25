@@ -1,5 +1,12 @@
-body {
+html,
+body,
+#root,
+.App {
+  height: 100%;
   margin: 0;
+}
+
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -204,8 +211,8 @@ button:hover {
   justify-content: center;
   background: #ff5e5e;
   padding: 2rem;
-  height: 100vh;
-  min-height: 100vh;
+  height: auto;
+  min-height: auto;
   box-sizing: border-box;
 }
 
@@ -305,15 +312,16 @@ button:hover {
 
 /* Navbar Styles Update */
 .nav-links {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
+  width: 30%;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .nav-links span {
   cursor: pointer;
   font-size: 1.1rem;
-  color: #333;
+  color: #ffffff;
   transition: color 0.2s;
   font-weight: 500;
   padding: 0.5rem 0;
@@ -343,7 +351,7 @@ button:hover {
 .contacts-page {
   max-width: 1200px;
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 0.75rem 0.5rem;
 }
 
 .contacts-header {
@@ -535,4 +543,153 @@ button:hover {
   font-size: 1.1rem;
   margin: 1rem 0;
   grid-column: 1 / -1;
+}
+
+/* Dashboard Responsive Styles */
+@media screen and (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+    padding-bottom: 2rem;
+  }
+
+  .dashboard-left,
+  .dashboard-right {
+    flex: none;
+    width: 100%;
+    padding: 1rem;
+    min-height: auto;
+    height: auto;
+  }
+  
+  .dashboard-right {
+    flex-grow: 1;
+  }
+
+  .profile-pic-wrapper {
+    width: 200px;
+    height: 200px;
+    padding: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .profile-pic {
+    width: 180px;
+    height: 180px;
+  }
+
+  .profile-name {
+    font-size: 1.75rem;
+  }
+
+  .welcome-card {
+    padding: 30px 20px;
+    max-width: 95%;
+  }
+
+  .welcome-card h1 {
+    font-size: 1.75rem;
+  }
+
+  .welcome-card p {
+    font-size: 1rem;
+  }
+
+  .view-more-btn {
+    padding: 10px 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .dashboard-left,
+  .dashboard-right {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .profile-pic-wrapper {
+    width: 160px;
+    height: 160px;
+    padding: 6px;
+  }
+
+  .profile-pic {
+    width: 148px;
+    height: 148px;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+  }
+
+  .welcome-card {
+    padding: 20px 10px;
+  }
+
+  .welcome-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-card p {
+    font-size: 0.9rem;
+  }
+
+  .view-more-btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .contacts-list {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .contacts-page {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .dashboard-left,
+  .dashboard-right {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .profile-pic-wrapper {
+    width: 120px;
+    height: 120px;
+    padding: 4px;
+  }
+
+  .profile-pic {
+    width: 112px;
+    height: 112px;
+  }
+
+  .profile-name {
+    font-size: 1.25rem;
+  }
+
+  .welcome-card {
+    padding: 15px 8px;
+  }
+
+  .welcome-card h1 {
+    font-size: 1.25rem;
+  }
+
+  .welcome-card p {
+    font-size: 0.8rem;
+  }
+
+  .view-more-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .contacts-list {
+    padding: 0 0.25rem;
+  }
+
+  .contacts-page {
+    padding: 0.5rem 0.25rem;
+  }
 }

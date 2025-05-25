@@ -51,9 +51,6 @@ const ViewContacts = () => {
     <div className="contacts-page">
       <div className="contacts-header">
         <h1>My Contacts</h1>
-        <button className="add-contact-btn" onClick={() => navigate('/add-contact')}>
-          Add New Contact
-        </button>
       </div>
       {error && <div className="error-message">{error}</div>}
       <div className="contacts-list">

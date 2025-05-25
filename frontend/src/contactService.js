@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/contacts'; // Replace with your backend API URL
+const API_URL = 'http://localhost:5000/contacts'; 
 
 export const getContacts = async () => {
   try {
