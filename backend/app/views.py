@@ -10,14 +10,15 @@ api = Blueprint('api', __name__)
 def register():
     try:
         data = request.form
-        name = data.get('name')
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
         email = data.get('email')
         password = data.get('password')
         phone = data.get('phone', None)  # Make phone optional
 
-        print(f"Received registration data: name={name}, email={email}, phone={phone}")  # Debug log
+        print(f"Received registration data: first_name={first_name}, last_name={last_name}, email={email}, phone={phone}")  # Debug log
 
-        if not name or not email or not password:
+        if not first_name or not last_name or not email or not password:
             return jsonify({"error": "Missing required fields"}), 400
 
         # check if user already exists
@@ -26,9 +27,10 @@ def register():
 
         hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
         
-        # Create new user without phone field first
+        # Create new user
         new_user = User(
-            name=name,
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             password=hashed_pw
         )
@@ -164,7 +166,8 @@ def get_user(user_id):
     
     return jsonify({
         "id": user.id,
-        "name": user.name,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
         "email": user.email,
         "profile_pic": user.profile_pic
     }), 200
@@ -184,7 +187,8 @@ def update_user(user_id):
             return jsonify({"error": "Email already in use"}), 409
 
     # Update user details
-    user.name = data.get('name', user.name)
+    user.first_name = data.get('first_name', user.first_name)
+    user.last_name = data.get('last_name', user.last_name)
     user.email = data.get('email', user.email)
 
     try:
@@ -193,7 +197,8 @@ def update_user(user_id):
             "message": "User updated successfully",
             "user": {
                 "id": user.id,
-                "name": user.name,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
                 "email": user.email,
                 "profile_pic": user.profile_pic
             }

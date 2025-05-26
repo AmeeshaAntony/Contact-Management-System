@@ -22,6 +22,11 @@ const Home = () => {
     }
   };
 
+  const getFullName = () => {
+    if (!user) return 'User Name';
+    return `${user.first_name} ${user.last_name}`;
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-left">
@@ -32,11 +37,11 @@ const Home = () => {
             className="profile-pic"
           />
         </div>
-        <h2 className="profile-name">{user?.name || 'User Name'}</h2>
+        <h2 className="profile-name">{getFullName()}</h2>
       </div>
       <div className="dashboard-right">
         <div className="welcome-card">
-          <h1>Welcome, {user?.name || 'User'}!</h1>
+          <h1>Welcome, {getFullName()}!</h1>
           <p>Your personal dashboard for managing contacts and more.<br />
             We offer solutions adapted to today's needs.</p>
           <button className="view-more-btn" onClick={() => navigate('/view-contacts')}>View Contacts</button>

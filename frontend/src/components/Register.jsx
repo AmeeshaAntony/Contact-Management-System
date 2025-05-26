@@ -5,12 +5,14 @@ import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
     phone: '',
-    photo: null
+    photo: null,
+    dateOfBirth: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -51,12 +53,9 @@ const Register = () => {
     return emailRegex.test(email) ? '' : 'Please enter a valid email address';
   };
 
-  const validateName = (name) => {
-    if (name.length > 55) {
-      return 'Name cannot exceed 55 characters';
-    }
-    if(!name){
-      return 'Name is not present';
+  const validateName = (firstName, lastName) => {
+    if (!firstName || !lastName) {
+      return 'First name and last name are required';
     }
     return '';
   };
@@ -81,16 +80,16 @@ const Register = () => {
       setFormData({ ...formData, [name]: value });
     }
     
+    if (name === 'firstName' || name === 'lastName') {
+      setNameError(validateName(name === 'firstName' ? value : formData.firstName, name === 'lastName' ? value : formData.lastName));
+    }
+
     if (name === 'password') {
       setPasswordError(validatePassword(value));
     }
 
     if (name === 'email') {
       setEmailError(validateEmail(value));
-    }
-
-    if (name === 'name') {
-      setNameError(validateName(value));
     }
 
     if (name === 'phone') {
@@ -103,13 +102,11 @@ const Register = () => {
     setError('');
     setSuccess('');
     
-   
-    const nameValidationError = validateName(formData.name);
+    const nameValidationError = validateName(formData.firstName, formData.lastName);
     if (nameValidationError) {
       setNameError(nameValidationError);
       return;
     }
-    
     
     const emailValidationError = validateEmail(formData.email);
     if (emailValidationError) {
@@ -117,13 +114,11 @@ const Register = () => {
       return;
     }
     
-    
     const passwordValidationError = validatePassword(formData.password);
     if (passwordValidationError) {
       setPasswordError(passwordValidationError);
       return;
     }
-    
     
     if (formData.phone) {
       const phoneValidationError = validatePhone(formData.phone);
@@ -139,10 +134,12 @@ const Register = () => {
     }
     try {
       const data = new FormData();
-      data.append('name', formData.name);
+      data.append('first_name', formData.firstName);
+      data.append('last_name', formData.lastName);
       data.append('email', formData.email);
       data.append('password', formData.password);
       data.append('phone', formData.phone);
+      data.append('date_of_birth', formData.dateOfBirth);
       if (formData.photo) {
         data.append('profile_pic', formData.photo);
       }
@@ -160,18 +157,32 @@ const Register = () => {
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="form-group">
-          <label>Name:</label>
-          <input 
-            type="text" 
-            name="name" 
-            value={formData.name} 
-            onChange={handleChange} 
-            maxLength={55}
-            required 
-          />
+        <div className="form-group name-group">
+          <div className="name-inputs">
+            <div className="input-wrapper">
+              <label>First Name:</label>
+              <input 
+                type="text" 
+                name="firstName" 
+                value={formData.firstName} 
+                onChange={handleChange} 
+                maxLength={55}
+                required 
+              />
+            </div>
+            <div className="input-wrapper">
+              <label>Last Name:</label>
+              <input 
+                type="text" 
+                name="lastName" 
+                value={formData.lastName} 
+                onChange={handleChange} 
+                maxLength={55}
+                required 
+              />
+            </div>
+          </div>
           {nameError && <div className="name-error">{nameError}</div>}
-          <div className="char-counter">{formData.name.length}/55 characters</div>
         </div>
         <div className="form-group">
           <label>Email:</label>
@@ -207,6 +218,15 @@ const Register = () => {
         <div className="form-group">
           <label>Photo:</label>
           <input type="file" name="photo" accept="image/*" onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Date of Birth:</label>
+          <input
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+          />
         </div>
         <button type="submit" disabled={!!passwordError || !!emailError || !!nameError || !!phoneError}>Register</button>
       </form>

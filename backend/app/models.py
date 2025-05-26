@@ -5,7 +5,8 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(55), nullable=False)
+    last_name = db.Column(db.String(55), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     phone = db.Column(db.String(15), nullable=True, default=None)
@@ -13,7 +14,7 @@ class User(db.Model):
     contacts = db.relationship('Contact', backref='user', lazy=True)
 
     def __repr__(self):
-        return f"<User {self.name}>"
+        return f"<User {self.first_name} {self.last_name}>"
 
 class Contact(db.Model):
     __tablename__ = 'contacts'

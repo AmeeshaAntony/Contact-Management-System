@@ -111,6 +111,24 @@ button[type="submit"]:disabled {
   border-radius: 4px;
 }
 
+/* Styles for first and last name inputs */
+.name-group .name-inputs {
+  display: flex;
+  gap: 1rem; /* Space between first and last name inputs */
+}
+
+.name-group .input-wrapper {
+  flex: 1; /* Allow inputs to grow and shrink */
+}
+
+/* Stack first and last name inputs on smaller screens */
+@media screen and (max-width: 480px) {
+  .name-group .name-inputs {
+    flex-direction: column; /* Stack inputs vertically */
+    gap: 0.75rem; /* Adjust gap for stacked layout */
+  }
+}
+
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   .register-container {
