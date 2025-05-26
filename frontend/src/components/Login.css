@@ -1,6 +1,6 @@
 .login-container {
   max-width: 400px;
-  margin: auto;
+  margin: 10rem auto;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -69,7 +69,7 @@ button[type="submit"]:hover {
   .login-container {
     max-width: 90%;
     margin: auto;
-    padding: 1.5rem 0.5rem;
+    padding-top: 11rem;
   }
 
   .form-group input {
@@ -79,7 +79,7 @@ button[type="submit"]:hover {
 
   button[type="submit"] {
     padding: 0.6rem;
-    max-width: 90%;
+    width: 100%;
   }
 }
 
@@ -87,7 +87,7 @@ button[type="submit"]:hover {
 @media screen and (max-width: 320px) {
   .login-container {
     margin: auto;
-    padding: 1rem 0.25rem;
+    padding-top: 11rem;
   }
 
   .login-container h2 {

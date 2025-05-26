@@ -4,9 +4,9 @@ body,
 .App {
   height: 100%;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
+  justify-content: flex-start;
+  align-items: stretch;
   min-height: 100vh;
 }
 
@@ -717,4 +717,13 @@ button:hover {
   .contacts-page {
     padding: 0.5rem 0.25rem;
   }
+}
+
+/* Add this class to a wrapper div around your Login component */
+.center-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  min-height: 100vh; /* Make the container at least viewport height */
+  width: 100%; /* Ensure it takes full width */
 }
