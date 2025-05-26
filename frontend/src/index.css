@@ -4,6 +4,10 @@ body,
 .App {
   height: 100%;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 body {
@@ -119,15 +123,26 @@ button:hover {
 }
 
 .nav-brand {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ff5e5e;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffdd00;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-style: italic;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.3s ease, transform 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  -webkit-text-stroke: 1px #333;
+  text-stroke: 1px #333;
+  -webkit-text-fill-color: #ffdd00;
 }
 
 .nav-brand:hover {
-  color: #ff3d3d;
+  color: #ffe033;
+  transform: scale(1.05);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  -webkit-text-stroke: 1px #555;
+  text-stroke: 1px #555;
 }
 
 .logout-button {
@@ -165,6 +180,9 @@ button:hover {
   display: flex;
   min-height: 100vh;
   background: #fff;
+  margin-top: 0;
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .dashboard-left {
@@ -550,6 +568,7 @@ button:hover {
   .dashboard-container {
     flex-direction: column;
     padding-bottom: 2rem;
+    margin-top: 0;
   }
 
   .dashboard-left,
@@ -644,6 +663,12 @@ button:hover {
 
   .contacts-page {
     padding: 0.75rem 0.5rem;
+  }
+  .nav-links {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 }
 
