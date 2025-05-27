@@ -114,7 +114,7 @@ button[type="submit"]:disabled {
 /* Styles for first and last name inputs */
 .name-group .name-inputs {
   display: flex;
-  gap: 1rem; /* Space between first and last name inputs */
+  gap: 2rem; /* Increased space between first and last name inputs */
 }
 
 .name-group .input-wrapper {
