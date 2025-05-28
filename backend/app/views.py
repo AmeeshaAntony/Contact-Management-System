@@ -169,6 +169,8 @@ def get_user(user_id):
         "first_name": user.first_name,
         "last_name": user.last_name,
         "email": user.email,
+        "phone": user.phone,
+        "date_of_birth": user.date_of_birth.strftime('%Y-%m-%d') if user.date_of_birth else None,
         "profile_pic": user.profile_pic
     }), 200
 
@@ -178,7 +180,7 @@ def update_user(user_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    data = request.get_json()
+    data = request.form # Get form data for text fields
     
     # Check if email is being changed and if it's already taken
     if data.get('email') and data.get('email') != user.email:
@@ -190,6 +192,39 @@ def update_user(user_id):
     user.first_name = data.get('first_name', user.first_name)
     user.last_name = data.get('last_name', user.last_name)
     user.email = data.get('email', user.email)
+    user.phone = data.get('phone', user.phone)
+
+    date_of_birth_str = data.get('date_of_birth')
+    if date_of_birth_str:
+        try:
+            from datetime import datetime
+            user.date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d').date()
+        except ValueError:
+            # Handle cases where the date string is not in the expected format
+            return jsonify({"error": "Invalid date format for date of birth"}), 400
+    else:
+        user.date_of_birth = None # Set to None if no date is provided or it's an empty string
+
+    # Handle profile picture upload if provided in the PUT request
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file.filename != '':
+            try:
+                # Create uploads directory if it doesn't exist (should already exist from registration)
+                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                os.makedirs(upload_folder, exist_ok=True) # Ensure directory exists
+
+                # Secure the filename and save the file
+                # Using user_id and a part of the original filename to make it unique
+                filename = secure_filename(f"profile_update_{user_id}_{file.filename}")
+                file_path = os.path.join(upload_folder, filename)
+                file.save(file_path)
+
+                # Update user's profile_pic field with the new file path
+                user.profile_pic = f"/static/uploads/{filename}"
+            except Exception as e:
+                print(f"Error saving profile picture during update: {str(e)}")
+                return jsonify({"error": f"Failed to save profile picture: {str(e)}"}), 500
 
     try:
         db.session.commit()
@@ -200,6 +235,8 @@ def update_user(user_id):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
+                "phone": user.phone,
+                "date_of_birth": user.date_of_birth.strftime('%Y-%m-%d') if user.date_of_birth else None,
                 "profile_pic": user.profile_pic
             }
         }), 200

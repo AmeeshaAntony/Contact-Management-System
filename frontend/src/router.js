@@ -44,6 +44,14 @@ const AppRouter = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/edit-profile"
+          element={
+            <PrivateRoute>
+              <EditContact />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );

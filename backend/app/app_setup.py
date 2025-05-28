@@ -11,7 +11,7 @@ def create_app():
     app.config.from_object('app.config.Config')
 
     db.init_app(app)
-    CORS(app)
+    CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
     bcrypt.init_app(app)
     from app.views import api 
     app.register_blueprint(api)

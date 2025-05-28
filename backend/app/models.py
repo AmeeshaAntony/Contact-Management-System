@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     phone = db.Column(db.String(15), nullable=True, default=None)
+    date_of_birth = db.Column(db.Date, nullable=True, default=None)
     profile_pic = db.Column(db.String(500), nullable=True, default=None)
     contacts = db.relationship('Contact', backref='user', lazy=True)
 

@@ -45,6 +45,7 @@ const Home = () => {
           <p>Your personal dashboard for managing contacts and more.<br />
             We offer solutions adapted to today's needs.</p>
           <button className="view-more-btn" onClick={() => navigate('/view-contacts')}>View Contacts</button>
+          <button className="view-more-btn" onClick={() => navigate('/edit-profile')}>Edit Profile</button>
         </div>
       </div>
     </div>
