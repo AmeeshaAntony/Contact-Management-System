@@ -277,3 +277,31 @@ def upload_profile_pic(user_id):
         }), 200
 
     return jsonify({"error": "File upload failed"}), 400
+
+@api.route('/user/<int:user_id>/change-password', methods=['PUT'])
+def change_password(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    current_password = data.get('current_password')
+    new_password = data.get('new_password')
+
+    if not current_password or not new_password:
+        return jsonify({"error": "Both current and new password are required"}), 400
+
+    # Verify current password
+    if not bcrypt.check_password_hash(user.password, current_password):
+        return jsonify({"error": "Current password is incorrect"}), 401
+
+    # Hash and update new password
+    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    user.password = hashed_password
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Password changed successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to change password"}), 500

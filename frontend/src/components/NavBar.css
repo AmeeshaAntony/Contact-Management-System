@@ -13,6 +13,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s;
+  margin-right: 0rem;
 }
 
 .nav-brand:hover {
@@ -21,8 +22,15 @@
 
 .nav-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   align-items: center;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
+.nav-links .nav-link:first-child {
+  /* No specific margin needed here now */
 }
 
 .nav-link {
@@ -30,6 +38,7 @@
   cursor: pointer;
   transition: color 0.2s;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -42,6 +51,14 @@
 
 .edit-profile-link:hover {
   color: #218838;
+}
+
+.change-password-link {
+  color: #17a2b8;
+}
+
+.change-password-link:hover {
+  color: #138496;
 }
 
 .logout-link {
@@ -79,13 +96,15 @@
   }
 
   .nav-brand {
-    font-size: 1.1rem;
+    margin-right: 0;
   }
 
   .nav-links {
     width: 100%;
     justify-content: space-between;
     gap: 0.5rem;
+    flex-wrap: wrap;
+    flex-grow: 0;
   }
 
   .nav-link {

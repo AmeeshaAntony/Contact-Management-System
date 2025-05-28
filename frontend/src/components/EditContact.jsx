@@ -131,7 +131,7 @@ const EditContact = () => {
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
       
-      <div className="profile-pic-wrapper">
+      <div className="profile-pic-wrapper" style={{ marginLeft: '2px' }}>
         <img
           src={previewUrl || '/default-profile.png'}
           alt="Profile"

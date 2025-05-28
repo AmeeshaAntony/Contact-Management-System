@@ -7,6 +7,7 @@ import AddContact from './components/AddContact';
 import EditContact from './components/EditContact';
 import NavBar from './components/NavBar';
 import Home from './components/Home';
+import ChangePassword from './components/ChangePassword';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -49,6 +50,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <EditContact />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <PrivateRoute>
+              <ChangePassword />
             </PrivateRoute>
           }
         />

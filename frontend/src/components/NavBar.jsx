@@ -19,6 +19,7 @@ const NavBar = () => {
       <div className="nav-links">
         <span className="nav-link" onClick={() => navigate('/add-contact')}>Add Contacts</span>
         <span className="nav-link edit-profile-link" onClick={() => navigate('/edit-profile')}>Edit Profile</span>
+        <span className="nav-link change-password-link" onClick={() => navigate('/change-password')}>Change Password</span>
         <span className="nav-link logout-link" onClick={handleLogout}>Logout</span>
       </div>
     </nav>
