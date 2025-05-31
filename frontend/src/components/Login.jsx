@@ -31,38 +31,41 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+    <div className="login-page-container">
+      <div className="login-form-container">
+        <h2>Login</h2>
+        {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+        <div className="login-buttons">
+          <button onClick={() => navigate('/register')}>Register</button>
+          <button onClick={() => alert('Forgot Password clicked!')}>Forgot Password</button>
         </div>
-        <div className="form-group">
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p>
-        Don't have an account?{' '}
-        <span className="link" onClick={() => navigate('/register')}>
-          Register here
-        </span>
-      </p>
+      </div>
+      <div className="login-image-container">
+        <img src="/images/meeting-image.jpg" alt="Meeting" />
+      </div>
     </div>
   );
 };

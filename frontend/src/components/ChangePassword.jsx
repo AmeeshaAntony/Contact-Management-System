@@ -106,6 +106,7 @@ const ChangePassword = () => {
         <div className="button-group">
           <button type="submit">Change Password</button>
           <button type="button" onClick={() => navigate('/edit-profile')}>Cancel</button>
+          <button type="button" onClick={() => navigate('/contacts')}>Home</button>
         </div>
       </form>
     </div>
