@@ -51,9 +51,9 @@ const EditContact = () => {
       } catch (err) {
         console.error('Error fetching user profile:', err);
         setError(err.response?.data?.message || 'Failed to fetch user profile');
-        setLoading(false);
-      }
-    };
+      setLoading(false);
+    }
+  };
 
     fetchUserProfile();
   }, []);
@@ -100,7 +100,7 @@ const EditContact = () => {
       });
 
       await axios.put(`http://localhost:5000/user/${userId}`, formDataToSend, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }

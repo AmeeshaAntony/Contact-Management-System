@@ -2,7 +2,10 @@ import os
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, jsonify, current_app
 from app.models import Contact, User
-from app.app_setup import db, bcrypt
+from app.app_setup import db, bcrypt, mail
+from datetime import datetime, timedelta # Import datetime and timedelta
+import secrets # Import secrets for token generation
+from flask_mail import Message  # Add this import
 
 api = Blueprint('api', __name__)
 
@@ -15,8 +18,9 @@ def register():
         email = data.get('email')
         password = data.get('password')
         phone = data.get('phone', None)  # Make phone optional
+        date_of_birth_str = data.get('date_of_birth', None)  # Get date_of_birth from form data
 
-        print(f"Received registration data: first_name={first_name}, last_name={last_name}, email={email}, phone={phone}")  # Debug log
+        print(f"Received registration data: first_name={first_name}, last_name={last_name}, email={email}, phone={phone}, date_of_birth={date_of_birth_str}")  # Debug log
 
         if not first_name or not last_name or not email or not password:
             return jsonify({"error": "Missing required fields"}), 400
@@ -38,6 +42,14 @@ def register():
         # Add phone if provided
         if phone:
             new_user.phone = phone
+
+        # Add date_of_birth if provided
+        if date_of_birth_str:
+            try:
+                from datetime import datetime
+                new_user.date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d').date()
+            except ValueError:
+                return jsonify({"error": "Invalid date format for date of birth"}), 400
 
         # Handle profile picture upload if provided
         if 'profile_pic' in request.files:
@@ -305,3 +317,79 @@ def change_password(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to change password"}), 500
+
+@api.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        # Generate a secure random token
+        token = secrets.token_urlsafe(32)
+        # Set token expiration time (e.g., 1 hour)
+        expiration_time = datetime.utcnow() + timedelta(hours=1)
+
+        user.reset_token = token
+        user.reset_token_expiration = expiration_time
+        db.session.commit()
+
+        # Create the reset link
+        reset_link = f"http://localhost:3000/reset-password/{token}"
+        
+        # Create and send the email
+        try:
+            msg = Message('Password Reset Request',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email])
+            msg.body = f'''To reset your password, visit the following link:
+{reset_link}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+            mail.send(msg)
+            print(f"Password reset email sent to {user.email}")
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
+            return jsonify({"error": "Failed to send reset email"}), 500
+
+        return jsonify({"message": "If a user with that email exists, a password reset link has been sent."}), 200
+    else:
+        # Return a generic message even if the user doesn't exist
+        # to prevent leaking information about registered emails
+        return jsonify({"message": "If a user with that email exists, a password reset link has been sent."}), 200
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    token = data.get('token')
+    new_password = data.get('new_password')
+
+    if not token or not new_password:
+        return jsonify({"error": "Token and new password are required"}), 400
+
+    # Find user with the given token
+    user = User.query.filter_by(reset_token=token).first()
+
+    if not user:
+        return jsonify({"error": "Invalid or expired reset token"}), 400
+
+    # Check if token has expired
+    if user.reset_token_expiration < datetime.utcnow():
+        return jsonify({"error": "Reset token has expired"}), 400
+
+    # Hash the new password
+    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    
+    # Update user's password and clear reset token
+    user.password = hashed_password
+    user.reset_token = None
+    user.reset_token_expiration = None
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Password has been reset successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to reset password"}), 500

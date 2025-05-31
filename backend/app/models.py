@@ -12,6 +12,8 @@ class User(db.Model):
     phone = db.Column(db.String(15), nullable=True, default=None)
     date_of_birth = db.Column(db.Date, nullable=True, default=None)
     profile_pic = db.Column(db.String(500), nullable=True, default=None)
+    reset_token = db.Column(db.String(100), nullable=True)
+    reset_token_expiration = db.Column(db.DateTime, nullable=True)
     contacts = db.relationship('Contact', backref='user', lazy=True)
 
     def __repr__(self):

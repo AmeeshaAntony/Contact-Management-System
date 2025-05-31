@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Alert
+} from '@mui/material';
 import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
     phone: '',
-    photo: null,
-    dateOfBirth: ''
+    date_of_birth: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -80,8 +87,8 @@ const Register = () => {
       setFormData({ ...formData, [name]: value });
     }
     
-    if (name === 'firstName' || name === 'lastName') {
-      setNameError(validateName(name === 'firstName' ? value : formData.firstName, name === 'lastName' ? value : formData.lastName));
+    if (name === 'first_name' || name === 'last_name') {
+      setNameError(validateName(name === 'first_name' ? value : formData.first_name, name === 'last_name' ? value : formData.last_name));
     }
 
     if (name === 'password') {
@@ -102,7 +109,7 @@ const Register = () => {
     setError('');
     setSuccess('');
     
-    const nameValidationError = validateName(formData.firstName, formData.lastName);
+    const nameValidationError = validateName(formData.first_name, formData.last_name);
     if (nameValidationError) {
       setNameError(nameValidationError);
       return;
@@ -134,107 +141,131 @@ const Register = () => {
     }
     try {
       const data = new FormData();
-      data.append('first_name', formData.firstName);
-      data.append('last_name', formData.lastName);
+      data.append('first_name', formData.first_name);
+      data.append('last_name', formData.last_name);
       data.append('email', formData.email);
       data.append('password', formData.password);
       data.append('phone', formData.phone);
-      data.append('date_of_birth', formData.dateOfBirth);
+      data.append('date_of_birth', formData.date_of_birth);
       if (formData.photo) {
         data.append('profile_pic', formData.photo);
       }
-      await axios.post('http://localhost:5000/register', data);
-      setSuccess('Registration successful! You can now log in.');
-      setTimeout(() => navigate('/'), 1500);
+      const response = await axios.post('http://localhost:5000/register', data);
+      if (response.data.message) {
+        setSuccess('Registration successful! You can now log in.');
+        setTimeout(() => navigate('/login'), 1500);
+      }
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
     }
   };
 
   return (
-    <div className="register-container">
-      <h2>Register</h2>
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="form-group name-group">
-          <div className="name-inputs">
-            <div className="input-wrapper">
-              <label>First Name:</label>
-              <input 
-                type="text" 
-                name="firstName" 
-                value={formData.firstName} 
-                onChange={handleChange} 
-                maxLength={55}
-                required 
-              />
-            </div>
-            <div className="input-wrapper">
-              <label>Last Name:</label>
-              <input 
-                type="text" 
-                name="lastName" 
-                value={formData.lastName} 
-                onChange={handleChange} 
-                maxLength={55}
-                required 
-              />
-            </div>
-          </div>
-          {nameError && <div className="name-error">{nameError}</div>}
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-          {emailError && <div className="email-error">{emailError}</div>}
-        </div>
-        <div className="form-group">
-          <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-          {passwordError && <div className="password-error">{passwordError}</div>}
-          <div className="password-requirements">
-            Password must contain at least 8 characters with one uppercase letter, one lowercase letter, one number, and one special character.
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Confirm Password:</label>
-          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-        </div>
-        <div className="form-group">
-          <label>Phone:</label>
-          <input 
-            type="tel" 
-            name="phone" 
-            value={formData.phone} 
-            onChange={handleChange}
-            placeholder="Enter 10-digit phone number" 
-          />
-          {phoneError && <div className="phone-error">{phoneError}</div>}
-          <div className="phone-requirements">
-            Phone number must contain exactly 10 digits.
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Photo:</label>
-          <input type="file" name="photo" accept="image/*" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Date of Birth:</label>
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" disabled={!!passwordError || !!emailError || !!nameError || !!phoneError}>Register</button>
-      </form>
-      <p>
-        Already have an account?{' '}
-        <span className="link" onClick={() => navigate('/')}>Login here</span>
-      </p>
-    </div>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
+          <Typography component="h1" variant="h5" align="center" gutterBottom>
+            Register
+          </Typography>
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="first_name"
+              label="First Name"
+              type="text"
+              id="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="last_name"
+              label="Last Name"
+              type="text"
+              id="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="email"
+              label="Email Address"
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="phone"
+              label="Phone Number"
+              type="tel"
+              id="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="date_of_birth"
+              label="Date of Birth"
+              type="date"
+              id="date_of_birth"
+              value={formData.date_of_birth}
+              onChange={handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            <Box sx={{ textAlign: 'center' }}>
+              <Link to="/login" style={{ textDecoration: 'none' }}>
+                Already have an account? Sign In
+              </Link>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

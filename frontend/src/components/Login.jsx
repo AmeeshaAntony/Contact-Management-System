@@ -33,34 +33,34 @@ const Login = () => {
   return (
     <div className="login-page-container">
       <div className="login-form-container">
-        <h2>Login</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit">Login</button>
-        </form>
+      <h2>Login</h2>
+      {error && <div className="error-message">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
         <div className="login-buttons">
           <button onClick={() => navigate('/register')}>Register</button>
-          <button onClick={() => alert('Forgot Password clicked!')}>Forgot Password</button>
+          <button onClick={() => navigate('/forgot-password')}>Forgot Password</button>
         </div>
       </div>
     </div>
