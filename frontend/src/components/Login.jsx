@@ -63,9 +63,6 @@ const Login = () => {
           <button onClick={() => alert('Forgot Password clicked!')}>Forgot Password</button>
         </div>
       </div>
-      <div className="login-image-container">
-        <img src="/images/meeting-image.jpg" alt="Meeting" />
-      </div>
     </div>
   );
 };
