@@ -9,6 +9,7 @@ import NavBar from './components/NavBar';
 import Home from './components/Home';
 import ChangePassword from './components/ChangePassword';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -29,6 +30,7 @@ const AppRouter = () => {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/contacts" element={<PrivateRoute><Home /></PrivateRoute>} />
         <Route path="/view-contacts" element={<PrivateRoute><ViewContacts /></PrivateRoute>} />
         <Route

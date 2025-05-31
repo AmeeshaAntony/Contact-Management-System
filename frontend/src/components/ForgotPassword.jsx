@@ -80,7 +80,7 @@ const ForgotPassword = () => {
               Send Reset Link
             </Button>
             <Box sx={{ textAlign: 'center' }}>
-              <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Link to="/" style={{ textDecoration: 'none' }}>
                 Back to Login
               </Link>
             </Box>
