@@ -8,7 +8,8 @@ import {
   Button,
   Typography,
   Paper,
-  Alert
+  Alert,
+  Input
 } from '@mui/material';
 import './Register.css';
 
@@ -18,8 +19,10 @@ const Register = () => {
     last_name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phone: '',
-    date_of_birth: ''
+    date_of_birth: '',
+    photo: null
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -27,9 +30,14 @@ const Register = () => {
   const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [previewUrl, setPreviewUrl] = useState('');
   const navigate = useNavigate();
 
   const validatePassword = (password) => {
+    if (!password) {
+      return 'Password is required';
+    }
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -56,25 +64,50 @@ const Register = () => {
   };
 
   const validateEmail = (email) => {
+    if (!email) {
+      return 'Email is required';
+    }
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email) ? '' : 'Please enter a valid email address';
   };
 
   const validateName = (firstName, lastName) => {
-    if (!firstName || !lastName) {
-      return 'First name and last name are required';
+    if (!firstName) {
+      return 'First name is required';
+    }
+    if (!lastName) {
+      return 'Last name is required';
+    }
+    if (firstName.length > 50) {
+      return 'First name must be less than 50 characters';
+    }
+    if (lastName.length > 50) {
+      return 'Last name must be less than 50 characters';
     }
     return '';
   };
 
   const validatePhone = (phone) => {
-    if (!phone) return ''; 
-    
-    
+    if (!phone) {
+      return 'Phone number is required';
+    }
     const digitsOnly = phone.replace(/\D/g, '');
-    
     if (digitsOnly.length !== 10) {
       return 'Phone number must contain exactly 10 digits';
+    }
+    return '';
+  };
+
+  const validateDateOfBirth = (date) => {
+    if (!date) {
+      return 'Date of birth is required';
+    }
+    return '';
+  };
+
+  const validatePhoto = (photo) => {
+    if (!photo) {
+      return 'Profile photo is required';
     }
     return '';
   };
@@ -82,17 +115,49 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'photo') {
-      setFormData({ ...formData, photo: files[0] });
+      const file = files[0];
+      setFormData({ ...formData, photo: file });
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
     
     if (name === 'first_name' || name === 'last_name') {
-      setNameError(validateName(name === 'first_name' ? value : formData.first_name, name === 'last_name' ? value : formData.last_name));
+      const currentName = name === 'first_name' ? value : formData.first_name;
+      const otherName = name === 'last_name' ? value : formData.last_name;
+      
+      if (name === 'first_name' && value.length > 50) {
+        setNameError('First name must be less than 50 characters');
+      } else if (name === 'last_name' && value.length > 50) {
+        setNameError('Last name must be less than 50 characters');
+      } else {
+        setNameError(validateName(currentName, otherName));
+      }
     }
 
     if (name === 'password') {
       setPasswordError(validatePassword(value));
+      // Check password match when password changes
+      if (formData.confirmPassword && value !== formData.confirmPassword) {
+        setConfirmPasswordError('Passwords do not match');
+      } else {
+        setConfirmPasswordError('');
+      }
+    }
+
+    if (name === 'confirmPassword') {
+      // Check password match when confirm password changes
+      if (value && value !== formData.password) {
+        setConfirmPasswordError('Passwords do not match');
+      } else {
+        setConfirmPasswordError('');
+      }
     }
 
     if (name === 'email') {
@@ -109,36 +174,49 @@ const Register = () => {
     setError('');
     setSuccess('');
     
+    // Validate all fields
     const nameValidationError = validateName(formData.first_name, formData.last_name);
+    const emailValidationError = validateEmail(formData.email);
+    const passwordValidationError = validatePassword(formData.password);
+    const phoneValidationError = validatePhone(formData.phone);
+    const dateValidationError = validateDateOfBirth(formData.date_of_birth);
+    const photoValidationError = validatePhoto(formData.photo);
+
     if (nameValidationError) {
       setNameError(nameValidationError);
       return;
     }
     
-    const emailValidationError = validateEmail(formData.email);
     if (emailValidationError) {
       setEmailError(emailValidationError);
       return;
     }
     
-    const passwordValidationError = validatePassword(formData.password);
     if (passwordValidationError) {
       setPasswordError(passwordValidationError);
       return;
     }
     
-    if (formData.phone) {
-      const phoneValidationError = validatePhone(formData.phone);
-      if (phoneValidationError) {
-        setPhoneError(phoneValidationError);
-        return;
-      }
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+
+    if (dateValidationError) {
+      setError(dateValidationError);
+      return;
+    }
+
+    if (photoValidationError) {
+      setError(photoValidationError);
+      return;
     }
     
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
+
     try {
       const data = new FormData();
       data.append('first_name', formData.first_name);
@@ -153,7 +231,7 @@ const Register = () => {
       const response = await axios.post('http://localhost:5000/register', data);
       if (response.data.message) {
         setSuccess('Registration successful! You can now log in.');
-        setTimeout(() => navigate('/login'), 1500);
+        setTimeout(() => navigate('/'), 1500);
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
@@ -181,6 +259,12 @@ const Register = () => {
             </Alert>
           )}
 
+          {success && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {success}
+            </Alert>
+          )}
+
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -192,6 +276,9 @@ const Register = () => {
               id="first_name"
               value={formData.first_name}
               onChange={handleChange}
+              error={!!nameError}
+              helperText={nameError}
+              inputProps={{ maxLength: 50 }}
             />
             <TextField
               margin="normal"
@@ -203,6 +290,9 @@ const Register = () => {
               id="last_name"
               value={formData.last_name}
               onChange={handleChange}
+              error={!!nameError}
+              helperText={nameError}
+              inputProps={{ maxLength: 50 }}
             />
             <TextField
               margin="normal"
@@ -214,6 +304,8 @@ const Register = () => {
               id="email"
               value={formData.email}
               onChange={handleChange}
+              error={!!emailError}
+              helperText={emailError}
             />
             <TextField
               margin="normal"
@@ -225,9 +317,25 @@ const Register = () => {
               id="password"
               value={formData.password}
               onChange={handleChange}
+              error={!!passwordError}
+              helperText={passwordError}
             />
             <TextField
               margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={!!confirmPasswordError}
+              helperText={confirmPasswordError}
+            />
+            <TextField
+              margin="normal"
+              required
               fullWidth
               name="phone"
               label="Phone Number"
@@ -235,9 +343,12 @@ const Register = () => {
               id="phone"
               value={formData.phone}
               onChange={handleChange}
+              error={!!phoneError}
+              helperText={phoneError}
             />
             <TextField
               margin="normal"
+              required
               fullWidth
               name="date_of_birth"
               label="Date of Birth"
@@ -249,6 +360,35 @@ const Register = () => {
                 shrink: true,
               }}
             />
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="photo-upload"
+                type="file"
+                name="photo"
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor="photo-upload">
+                <Button
+                  variant="outlined"
+                  component="span"
+                  fullWidth
+                >
+                  Upload Photo
+                </Button>
+              </label>
+              {previewUrl && (
+                <Box sx={{ mt: 2, textAlign: 'center' }}>
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    style={{ maxWidth: '200px', maxHeight: '200px' }}
+                  />
+                </Box>
+              )}
+            </Box>
             <Button
               type="submit"
               fullWidth
@@ -258,7 +398,7 @@ const Register = () => {
               Sign Up
             </Button>
             <Box sx={{ textAlign: 'center' }}>
-              <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Link to="/" style={{ textDecoration: 'none' }}>
                 Already have an account? Sign In
               </Link>
             </Box>
